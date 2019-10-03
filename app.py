@@ -1,76 +1,107 @@
+import re
 import requests
+import time
 from bs4 import BeautifulSoup
 
 """
-LINK 1: how data structure should look
-[
-	{
-		"question": "A systems administrator is configuring a server to host several virtual machines. The administrator configures the server and is ready to begin provisioning the virtual machines. Which of the following features should the administrator utilize to complete the task?",
-		"answer_options": {
-			"A": "Hypervisor",
-			"B": "Disk management",
-			"C": "Terminal services",
-			"D": "Device Manager",
-			"E": "Virtual LAN"
-		},
-		"correct_answer": ["A"]
-	}, {
-		"question": "A user accidentally spills liquid on a laptop. The user wants the device to be fixed and would like to know how much it will cost. Which of the following steps should the technician take NEXT to verify if the device is repairable before committing to a price? (Choose two.)",
-		"answer_options": {
-			"A": "Remove the case and organize the parts.",
-			"B": "Document the screw locations.",
-			"C": "Search the Internet for repair tutorials.",
-			"D": "Consult colleagues for advice.",
-			"E": "Place the device in rice for a few days."
-		},
-		"correct_answer": ["A", "B"]
-	}
-]
+PLEASE NOTE:
+Question A-2 for test 1001 from Link 1 does not work because it relies on an image file.
+You can either skip this question or test yourself online here:
+http://passcomptia.com/comptia-a-220-1001/comptia-a-220-1001-question-a-2/
+
+Also, the program runs slowly by necessity (see time.sleep on line 60).
+This is intentional in order to avoid hitting the limit of requests per minute.
+
+STILL TO BE DONE:
+- add 900 series questions (save to separate files)
+- set up link2 (currently being blocked by website, needs work-around)
 """
 
-data = {
+sources = {
 	"link1": "http://passcomptia.com/",
-	"link2": "https://www.test-questions.com/",
-	"link3": "https://www.examcompass.com/"
+	"link2": "https://www.examcompass.com/"
 }
 
-def scrape(url): # this function never varies
-	if data["link1"] in url:
-		print("That's a LINK 1 page!")
-		return scrape_link1(url)
-	if data["link2"] in url:
-		print("That's a LINK 2 page!")
-		return scrape_link2(url)
-	if data["link3"] in url:
-		print("That's a LINK 3 page!")
-		return scrape_link3(url)
+def clean_html(raw_html):
+	cleanr = re.compile("<.*?>")
+	clean_text = re.sub(cleanr, '', raw_html)
+	return clean_text
 
-def scrape_link1(url):
+def collect_link1_links(url):
 	soup = BeautifulSoup(requests.get(url).text, "html.parser") # entire HTML of page
 	links = soup.findAll("a")
-	hrefs_1001 = []
-	hrefs_1002 = []
+	hrefs = []
 	for link in links:
-		if "comptia-a-220-1001/comptia-a-220-1001-question" in str(link):
-			hrefs_1001.append(data["link1"] + link.get("href"))
-		if "comptia-a-220-1002/comptia-a-220-1002-question" in str(link):
-			hrefs_1002.append(data["link1"] + link.get("href"))
+		if "220-1001-question" in str(link) or "220-1002-question" in str(link):
+			hrefs.append(sources["link1"] + link.get("href"))
+	return hrefs
+
+def scrape_link1(url):
+	all_question_urls = collect_link1_links(url)
+	for url in all_question_urls:
+		try:
+			soup = BeautifulSoup(requests.get(url).text, "html.parser")
+
+			question_block = soup.find(class_="entry-content")
+			question_id = clean_html(str(soup.find(class_="entry-title")))
+			print(f"Saving question {question_id}...")
+			question = clean_html(str(question_block.p.b))
+			answer_options = str(question_block.p.find_next_sibling()).split("<br/>")
+			answer_options_list = [clean_html(option) for option in answer_options]
+			correct_answer = clean_html(str(question_block.span.b))
+
+			data_item = {
+				"question_id": question_id,
+				"question": question,
+				"answer_options": answer_options_list,
+				"correct_answer": correct_answer
+			}
+			save(data_item)
+			time.sleep(2)
+		except AttributeError:
+			continue
+
+def collect_link2_links(url):
+	pass
 
 def scrape_link2(url):
 	pass
 
-def scrape_link3(url):
-	pass
+def scrape(url):
+	if sources["link1"] in url:
+		scrape_link1(url)
+	if sources["link2"] in url:
+		scrape_link2(url)
 
-def clean(data): # this function never varies
-	pass
+def save(data):
+	if "1001" in data["question_id"]:
+		with open("1001_questions.txt", "a") as f:
+			f.write(data["question_id"] + "\n")
+			f.write(data["question"] + "\n")
+			for option in data["answer_options"]:
+				f.write(option + "\n")
+			f.write("\n\n")
+		with open("1001_answer_key.txt", "a") as f:
+			f.write(data["question_id"] + "\n")
+			f.write(data["correct_answer"] + "\n\n")
 
-def save(data): # this function never varies
-	pass
+	if "1002" in data["question_id"]:
+		with open("1002_questions.txt", "a") as f:
+			f.write(data["question_id"] + "\n")
+			f.write(data["question"] + "\n")
+			for option in data["answer_options"]:
+				f.write(option + "\n")
+			f.write("\n\n")
+		with open("1002_answer_key.txt", "a") as f:
+			f.write(data["question_id"] + "\n")
+			f.write(data["correct_answer"] + "\n\n")
 
-# TESTING CODE
-scrape("http://passcomptia.com/comptia-a-220-1001/")
-# scrape("https://www.test-questions.com/comptia-a-plus-exam-questions-01.php")
-# scrape("https://www.examcompass.com/comptia-a-plus-certification-practice-test-1-exam-220-1001")
+def run_app():
+	print("Working... this may take a few minutes.")
+	scrape("http://passcomptia.com/comptia-a-220-1001/")
+	scrape("http://passcomptia.com/comptia-a-220-1002/")
+	print("All done!")
+
+run_app()
 
 ###
