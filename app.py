@@ -1,3 +1,4 @@
+import requests
 from bs4 import BeautifulSoup
 
 """
@@ -28,18 +29,48 @@ LINK 1: how data structure should look
 """
 
 data = {
-	link1: "http://passcomptia.com/",
-	link2: "https://www.test-questions.com/comptia-a-plus-exam-questions-01.php",
-	link3: "https://www.examcompass.com/comptia/a-plus-certification/free-a-plus-practice-tests"
+	"link1": "http://passcomptia.com/",
+	"link2": "https://www.test-questions.com/",
+	"link3": "https://www.examcompass.com/"
 }
 
-def scrape(url): # this function does not vary
+def scrape(url): # this function never varies
+	if data["link1"] in url:
+		print("That's a LINK 1 page!")
+		return scrape_link1(url)
+	if data["link2"] in url:
+		print("That's a LINK 2 page!")
+		return scrape_link2(url)
+	if data["link3"] in url:
+		print("That's a LINK 3 page!")
+		return scrape_link3(url)
+
+def scrape_link1(url):
+	soup = BeautifulSoup(requests.get(url).text, "html.parser") # entire HTML of page
+	links = soup.findAll("a")
+	hrefs_1001 = []
+	hrefs_1002 = []
+	for link in links:
+		if "comptia-a-220-1001/comptia-a-220-1001-question" in str(link):
+			hrefs_1001.append(data["link1"] + link.get("href"))
+		if "comptia-a-220-1002/comptia-a-220-1002-question" in str(link):
+			hrefs_1002.append(data["link1"] + link.get("href"))
+
+def scrape_link2(url):
 	pass
 
-def clean(data): # this function does not vary
+def scrape_link3(url):
 	pass
 
-def save(data): # this function does not vary
+def clean(data): # this function never varies
 	pass
+
+def save(data): # this function never varies
+	pass
+
+# TESTING CODE
+scrape("http://passcomptia.com/comptia-a-220-1001/")
+# scrape("https://www.test-questions.com/comptia-a-plus-exam-questions-01.php")
+# scrape("https://www.examcompass.com/comptia-a-plus-certification-practice-test-1-exam-220-1001")
 
 ###
