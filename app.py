@@ -57,12 +57,12 @@ def save(data):
 def collect_link1_links(url):
 	soup = BeautifulSoup(requests.get(url).text, "html.parser") # entire HTML of page
 	links = soup.findAll("a")
-	hrefs = []
-	for link in links[0:25]:
-		if "question" in str(link):
+	hrefs1000 = []
+	for link in links:
+		if "220-1001-question" in str(link) or "220-1002-question" in str(link):
 			# print("Found a question!")
-			hrefs.append(sources["link1"] + link.get("href"))
-	return hrefs
+			hrefs1000.append(sources["link1"] + link.get("href"))
+	return hrefs1000
 
 def scrape_link1(url):
 	all_question_urls = collect_link1_links(url)
@@ -91,6 +91,7 @@ def scrape_link1(url):
 			continue
 
 def collect_link2_links(url):
+	pass
 	soup = BeautifulSoup(requests.get(url).text, "html.parser") # entire HTML of page
 	print(soup)
 	links = soup.findAll("a")
@@ -103,6 +104,7 @@ def collect_link2_links(url):
 	return hrefs
 
 def scrape_link2(url):
+	pass
 	all_question_urls = collect_link2_links(url)
 	# for url in all_question_urls:
 	# 	try:
