@@ -6,4 +6,6 @@ Source data:<br/>
 https://certification.comptia.org/training/resources/practice-tests/comptia-a-1001-practice-questions<br/>
 https://certification.comptia.org/training/resources/practice-tests/comptia-a-1002-practice-questions</br>
 http://passcomptia.com/<br/>
-https://www.examcompass.com/comptia/a-plus-certification/free-a-plus-practice-tests<br/>
+
+You can also find more test questions online here:<br/>
+https://www.examcompass.com/comptia/a-plus-certification/free-a-plus-practice-tests
