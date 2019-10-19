@@ -15,13 +15,11 @@ which would block the web scraper from accessing the respective webpage.
 
 STILL TO BE DONE:
 - add 900 series questions (save to separate files)
-- set up link2 (currently being blocked by website, needs work-around)
 """
 
 sources = {
 	"link1": "http://passcomptia.com/",
-	"link2": "https://www.examcompass.com/",
-	"link3": "https://certification.comptia.org/"
+	"link2": "https://certification.comptia.org/",
 }
 
 
@@ -57,7 +55,7 @@ def save(data):
 
 
 def collect_link1_links(url):
-	soup = BeautifulSoup(requests.get(url).text, "html.parser") # entire HTML of page
+	soup = BeautifulSoup(requests.get(url).text, "html.parser")
 	links = soup.findAll("a")
 	hrefs1000 = []
 	for link in links:
@@ -94,48 +92,7 @@ def scrape_link1(url):
 			continue
 
 
-def collect_link2_links(url):
-	pass
-	soup = BeautifulSoup(requests.get(url).text, "html.parser") # entire HTML of page
-	# print(soup)
-	links = soup.findAll("a")
-	hrefs = []
-	for link in links:
-		if "practice-test" in str(link):
-			hrefs.append(sources["link2"] + link.get("href"))
-	# for href in hrefs:
-	# 	print(href)
-	return hrefs
-
-
 def scrape_link2(url):
-	pass
-	all_question_urls = collect_link2_links(url)
-	# for url in all_question_urls:
-	# 	try:
-	# 		soup = BeautifulSoup(requests.get(url).text, "html.parser")
-
-	# 		question_block = soup.find(class_="entry-content")
-	# 		question_id = clean_html(str(soup.find(class_="entry-title")))
-	# 		print(f"Saving question {question_id}...")
-	# 		question = clean_html(str(question_block.p.b))
-	# 		answer_options = str(question_block.p.find_next_sibling()).split("<br/>")
-	# 		answer_options_list = [clean_html(option) for option in answer_options]
-	# 		correct_answer = clean_html(str(question_block.span.b))
-
-	# 		data_item = {
-	# 			"question_id": question_id,
-	# 			"question": question,
-	# 			"answer_options": answer_options_list,
-	# 			"correct_answer": correct_answer
-	# 		}
-	# 		save(data_item)
-	# 		time.sleep(2)
-	# 	except AttributeError:
-	# 		continue
-
-
-def scrape_link3(url):
 	if "1001" in url:
 		print("This is a 1001 test.")
 		id_prefix = "1001"
@@ -184,28 +141,18 @@ def scrape(url):
 	if sources["link2"] in url:
 		print("Link 2 link detected.")
 		scrape_link2(url)
-	if sources["link3"] in url:
-		print("Link 3 link detected.")
-		scrape_link3(url)
 
 
 def run_app():
 	print("Working... this may take a few minutes.")
 
 	# Link 1 links
-	scrape("http://passcomptia.com/comptia-a-220-1001/")
-	scrape("http://passcomptia.com/comptia-a-220-1002/")
+	# scrape("http://passcomptia.com/comptia-a-220-1001/")
+	# scrape("http://passcomptia.com/comptia-a-220-1002/")
 
-	# Link 3 links
+	# Link 2 links
 	scrape("https://certification.comptia.org/training/resources/practice-tests/comptia-a-1001-practice-questions")
-	scrape("https://certification.comptia.org/training/resources/practice-tests/comptia-a-1002-practice-questions")
-
-	# url = 'https://www.examcompass.com/comptia-a-plus-certification-practice-test-1-exam-220-1001'
-	# headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"}
-	# r = requests.get(url,headers=headers)
-	# r.raise_for_status()
-
-	# scrape("https://www.examcompass.com/comptia-a-plus-certification-practice-test-1-exam-220-1001")
+	# scrape("https://certification.comptia.org/training/resources/practice-tests/comptia-a-1002-practice-questions")
 
 	print("All done!")
 
