@@ -15,6 +15,14 @@ which would block the web scraper from accessing the respective webpage.
 
 STILL TO BE DONE:
 - add 900 series questions (save to separate files)
+- add https://www.quickstart.com/practice-test-comptia-a-220-1001.html
+- add https://www.quickstart.com/practice-test-comptia-a-220-1002.html
+- add https://quizlet.com/389272712/comptia-a-core-1-220-1001-practice-test-questions-flash-cards/
+- add https://www.certlibrary.com/exam/220-1001
+- add https://www.certlibrary.com/exam/220-1002
+- add https://www.edusum.com/comptia/comptia-a-plus-220-1001-certification-sample-questions
+- add https://www.edusum.com/comptia/comptia-a-plus-220-1002-certification-sample-questions
+
 """
 
 sources = {
@@ -147,11 +155,11 @@ def run_app():
 	print("Working... this may take a few minutes.")
 
 	# Link 1 links
-	# scrape("http://passcomptia.com/comptia-a-220-1001/")
-	# scrape("http://passcomptia.com/comptia-a-220-1002/")
+	scrape("http://passcomptia.com/comptia-a-220-1001/")
+	scrape("http://passcomptia.com/comptia-a-220-1002/")
 
 	# Link 2 links
-	scrape("https://certification.comptia.org/training/resources/practice-tests/comptia-a-1001-practice-questions")
+	# scrape("https://certification.comptia.org/training/resources/practice-tests/comptia-a-1001-practice-questions")
 	# scrape("https://certification.comptia.org/training/resources/practice-tests/comptia-a-1002-practice-questions")
 
 	print("All done!")
